@@ -22,8 +22,12 @@ addBoton.addEventListener('click', () => {
             })
         })
         .then(response => response.json())
-        .then(data => );
+        .then(data => insertRowIntoTable(data['data']));
 })
+
+function insertRowIntoTable(data){
+    
+}
 
 
 function loadHTMLTable(data) {
