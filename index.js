@@ -24,7 +24,37 @@ addBoton.addEventListener("click", () => {
     .then((data) => insertRowIntoTable(data["data"]));
 });
 
-function insertRowIntoTable(data) {}
+function insertRowIntoTable(data) {
+  console.log(data['id']['insertId']);
+  const table = document.querySelector('table tbody');
+  const isTableData = table.querySelector('.no-data');
+
+  let tableHtml = "<tr>";
+
+ for(var key in data){
+   if(data.hasOwnProperty(key)){
+     if(key === 'DateAdded'){
+       data[key] = new Date(data[key]).toLocaleString();
+     }
+     if(key === 'id'){
+       data[key] = data['id']['insertId'];
+     }
+     tableHtml += `<td> ${data[key]} </td>`;
+   }
+ }
+
+  tableHtml += `<td> <button class = "delete-row-btn" data-id = ${data.id}>Delete </button> </td>`;
+    tableHtml += `<td> <button class = "edit-row-btn" data-id = ${data.id}>Edit </button> </td>`;
+
+  tableHtml += "</tr>"; 
+
+  if(isTableData){
+    table.innerHTML = tableHtml;
+  } else{
+    const newRow = table.insertRow();
+    newRow.innerHTML = tableHtml;
+  }
+}
 
 function loadHTMLTable(data) {
   const table = document.querySelector("table tbody");
