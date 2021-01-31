@@ -4,6 +4,20 @@ document.addEventListener("DOMContentLoaded", function () {
     .then((data) => loadHTMLTable(data["data"]));
 });
 
+document.querySelector('table tbody').addEventListener('click', function (event){
+if(event.target.className === "delete-row-btn"){
+  deleteRowById(event.target.dataset.id);
+}
+})
+
+function deleteRowById(id){
+  fetch('http://localhost:5000/delete/' + id, {
+    method: 'DELETE'
+  })
+  .then(response => response.json())
+  .then(data => console.log(data));
+}
+
 const addBoton = document.getElementById("add-name-btn");
 
 addBoton.addEventListener("click", () => {
