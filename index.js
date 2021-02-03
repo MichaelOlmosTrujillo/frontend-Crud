@@ -30,6 +30,25 @@ function deleteRowById(id){
 function handleEditRow(id){
   const updateSection = document.querySelector('#update-row')
   updateSection.hidden = false;
+  document.querySelector('#update-row-btn').dataset.id = id;
+}
+
+updateBtn.onclick = function (){
+  const updateNameInput = document.querySelector('#update-name-input')
+
+  fetch('http://localhost:5000/update', {
+    method: 'PATCH',
+    body: JSON.stringify({
+      id: updateNameInput.dataset.id,
+      name: updateNameInput.value
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if(data.success){
+      location.reload();
+    }
+  })
 }
 
 const addBoton = document.getElementById("add-name-btn");
