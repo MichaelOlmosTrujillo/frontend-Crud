@@ -4,52 +4,60 @@ document.addEventListener("DOMContentLoaded", function () {
     .then((data) => loadHTMLTable(data["data"]));
 });
 
-document.querySelector('table tbody').addEventListener('click', function (event){
-if(event.target.className === "delete-row-btn"){
-  deleteRowById(event.target.dataset.id);
-}
-if(event.target.className === "edit-row-btn"){
-  handleEditRow(event.target.dataset.id);
-}
-})
+document
+  .querySelector("table tbody")
+  .addEventListener("click", function (event) {
+    if (event.target.className === "delete-row-btn") {
+      deleteRowById(event.target.dataset.id);
+    }
+    if (event.target.className === "edit-row-btn") {
+      handleEditRow(event.target.dataset.id);
+      console.log("id from click in edit: " + event.target.dataset.id)
+    }
+  });
 
 const updateBtn = document.querySelector("#update-row-btn");
 
-function deleteRowById(id){
-  fetch('http://localhost:5000/delete/' + id, {
-    method: 'DELETE'
+function deleteRowById(id) {
+  fetch("http://localhost:5000/delete/" + id, {
+    method: "DELETE",
   })
-  .then(response => response.json())
-  .then(data => {
-    if(data.success){
-      location.reload();
-    }
-  });
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        location.reload();
+      }
+    });
 }
 
-function handleEditRow(id){
-  const updateSection = document.querySelector('#update-row')
+function handleEditRow(id) {
+  const updateSection = document.querySelector("#update-row");
   updateSection.hidden = false;
-  document.querySelector('#update-row-btn').dataset.id = id;
+  updateBtn.dataset.id = id;
+  console.log("id of updateId: " + updateBtn.dataset.id);
 }
 
-updateBtn.onclick = function (){
-  const updateNameInput = document.querySelector('#update-name-input')
-
-  fetch('http://localhost:5000/update', {
-    method: 'PATCH',
+updateBtn.addEventListener('click', function () {
+  const updateNameInput = document.querySelector("#update-name-input");
+console.log(updateBtn.dataset.id)
+  fetch("http://localhost:5000/update", {
+    headers: {
+      "Content-type": "application/json",
+    },
+    method: "PATCH",
     body: JSON.stringify({
-      id: updateNameInput.dataset.id,
-      name: updateNameInput.value
-    })
+      id: updateBtn.dataset.id,
+      name: updateNameInput.value,
+    }),
   })
-  .then(response => response.json())
-  .then(data => {
-    if(data.success){
-      location.reload();
-    }
-  })
-}
+    .then((response) => response.json() )
+    .then((data) => {
+      if (data.success) {
+        location.reload();
+        // console.log(data)
+      }
+    });
+})
 
 const addBoton = document.getElementById("add-name-btn");
 
@@ -72,32 +80,32 @@ addBoton.addEventListener("click", () => {
 });
 
 function insertRowIntoTable(data) {
-  console.log(data['id']['insertId']);
-  const table = document.querySelector('table tbody');
-  const isTableData = table.querySelector('.no-data');
+  console.log(data["id"]["insertId"]);
+  const table = document.querySelector("table tbody");
+  const isTableData = table.querySelector(".no-data");
 
   let tableHtml = "<tr>";
 
- for(var key in data){
-   if(data.hasOwnProperty(key)){
-     if(key === 'DateAdded'){
-       data[key] = new Date(data[key]).toLocaleString();
-     }
-     if(key === 'id'){
-       data[key] = data['id']['insertId'];
-     }
-     tableHtml += `<td> ${data[key]} </td>`;
-   }
- }
+  for (var key in data) {
+    if (data.hasOwnProperty(key)) {
+      if (key === "DateAdded") {
+        data[key] = new Date(data[key]).toLocaleString();
+      }
+      if (key === "id") {
+        data[key] = data["id"]["insertId"];
+      }
+      tableHtml += `<td> ${data[key]} </td>`;
+    }
+  }
 
   tableHtml += `<td> <button class = "delete-row-btn" data-id = ${data.id}>Delete </button> </td>`;
-    tableHtml += `<td> <button class = "edit-row-btn" data-id = ${data.id}>Edit </button> </td>`;
+  tableHtml += `<td> <button class = "edit-row-btn" data-id = ${data.id}>Edit </button> </td>`;
 
-  tableHtml += "</tr>"; 
+  tableHtml += "</tr>";
 
-  if(isTableData){
+  if (isTableData) {
     table.innerHTML = tableHtml;
-  } else{
+  } else {
     const newRow = table.insertRow();
     newRow.innerHTML = tableHtml;
   }
@@ -106,7 +114,7 @@ function insertRowIntoTable(data) {
 function loadHTMLTable(data) {
   const table = document.querySelector("table tbody");
 
-  data.forEach(element => console.log(element.id));
+  data.forEach((element) => console.log(element.id));
 
   if (data.length === 0) {
     table.innerHTML =
@@ -116,7 +124,6 @@ function loadHTMLTable(data) {
 
   let tableHtml = "";
   data.forEach(function ({ id, Name, DateAdded }) {
-      
     tableHtml += "<tr>";
     tableHtml += `<td> ${id} </td>`;
     tableHtml += `<td> ${Name} </td>`;
