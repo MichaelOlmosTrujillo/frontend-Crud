@@ -1,3 +1,5 @@
+
+
 document.addEventListener("DOMContentLoaded", function () {
   fetch("http://localhost:5000/getAll")
     .then((response) => response.json())
@@ -17,6 +19,16 @@ document
   });
 
 const updateBtn = document.querySelector("#update-row-btn");
+const searchBtn = document.querySelector("#search-btn");
+
+searchBtn.addEventListener('click', function(){
+  const searchValue = document.querySelector("#search-input").value;
+  console.log(searchValue);
+
+  fetch('http://localhost:5000/search/' + searchValue)
+  .then(response => response.json())
+  .then(data => loadHTMLTable(data['data']));
+});
 
 function deleteRowById(id) {
   fetch("http://localhost:5000/delete/" + id, {
